@@ -1,0 +1,14 @@
+services:
+  # service.example:
+  #   class: 'services/ExampleService'
+
+  # service.mailer:
+  #   class: 'services/Mailer'
+  #   arguments: ['@service.example']
+  
+  service.databaseAccessService:
+    class: 'services/DatabaseAccessService'
+
+  service.userRepository:
+    class: 'services/UserRepository'
+    arguments: ['@service.userRepository'] 
