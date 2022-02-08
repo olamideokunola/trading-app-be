@@ -29,6 +29,9 @@ User.init({
     passwordResetToken: {
         type: DataTypes.STRING,
     },
+    changePassword: {
+        type: DataTypes.BOOLEAN
+    }
 }, {
     sequelize,
     modelName: 'User'
@@ -362,6 +365,11 @@ let users = [
                 id: 2,
                 name: 'trader',
                 description: 'Stable coin traders'
+            },
+            {
+                id: 3,
+                name: 'csaEmployee',
+                description: 'Stable coin traders'
             }
         ],
         traderAccount: {
@@ -371,6 +379,13 @@ let users = [
             address: "Ghanian's home",
             idPath: '//Ghanianlicense',
             currencies: []
+        },
+        employeeAccount: {
+            firstName: 'Ghanian',
+            middleName:'Test',
+            lastName: 'User',
+            address: "Ghanian's home",
+            phoneNumber: "09090909090"
         }
     }
 ]
@@ -535,4 +550,4 @@ sequelize.sync({ force: true })
 //     }
 // })
 
-module.exports = { User, Role, TraderAccount, IdType, CryptoAccount, Country, Currency, MerchantAccount }
+module.exports = { User, Role, TraderAccount, IdType, CryptoAccount, Country, Currency, MerchantAccount, EmployeeAccount }

@@ -71,14 +71,26 @@ const resolvers = {
     
     },
     userAccounts: async (parent, args, context) => {
-      console.log(`in userAccounts of resolver`)
+      console.log(`in userAccounts of resolver, user is`)
+      console.log(context.user)
       if (!context.user || !context.user.isAdmin) return null
       
       let userAccounts = await manageUsers.getUserAccounts()
-      
+      console.log(`in userAccounts of resolver, userAccounts gotten`)
       console.log(userAccounts)
 
       return userAccounts
+    },
+    roles: async (parent, args, context) => {
+      console.log(`in roles`)
+      console.log(context.user)
+      if (!context.user || !context.user.isAdmin) return null
+
+      let roles = await manageUsers.getRoles()
+      console.log(`in roles of resolver, roles gotten`)
+      console.log(roles)
+
+      return roles
     }
   },
   Mutation: {
@@ -178,7 +190,27 @@ const resolvers = {
 
       return newMerchant
     },
-    
+    createEmployeeUser: async (parent, args, context) => {
+      console.log(`in createEmployeeUser of resolver, email is ${args.userData.email}`)
+
+      if (!context.user && !context.user.isAdmin) return null
+
+      let { success, message, newUserAccount } = await manageUsers.createEmployeeUser({
+        email: args.userData.email, 
+        firstName: args.userData.firstName, 
+        middleName: args.userData.middleName, 
+        lastName: args.userData.lastName, 
+        address: args.userData.address, 
+        country: args.userData.country, 
+        phoneNumber: args.userData.phoneNumber, 
+        roles: args.userData.roles
+      })
+
+      console.log(newUserAccount)
+
+      if(!success) return { code: 200, success: false, message }
+      return { code: 200, success: true, message:"Employee User successfully created!", userData: newUserAccount }
+    } 
   }
 };
 

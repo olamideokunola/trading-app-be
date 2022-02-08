@@ -1,6 +1,4 @@
 const { TraderAccount } = require("../entities/entities")
-const bcrypt = require('bcrypt')
-const saltRounds = 10
 let { sendPasswordResetEmailNotification, sendAccountDoesNotExistEmailNotification, sendPasswordChangeSuccessfulNotification } = require("../mailer/emailNotification")
 const { decode } = require("jsonwebtoken")
 
@@ -115,10 +113,6 @@ let RegisterUser = class {
         }
     }
 
-    async encodePassword(pwd) {
-        return await bcrypt.hash(pwd, saltRounds)
-    }
-
     async checkAccount(email){
         console.log(`in checkAccountAndDeleteToken,  email is ${email}`)
         // check if account exists
@@ -197,7 +191,7 @@ let RegisterUser = class {
         // encode and change password
         console.log(`in changePassword, about to encode password`)
         
-        let encoded = await this.encodePassword(password)
+        let encoded = await this.userRepository.encodePassword(password)
         let { success } = await this.userRepository.changePassword({email, password: encoded})
 
         if(success) console.log(`in changePassword, password changed`)

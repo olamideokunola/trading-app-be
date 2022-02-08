@@ -1,6 +1,7 @@
-var { User, Role, TraderAccount, IdType, CryptoAccount, Country, Currency } = require('../db/models')
+var { User, Role, TraderAccount, IdType, CryptoAccount, Country, Currency, EmployeeAccount } = require('../db/models')
 let UserEntity = require('../entities/entities').User
 let TraderAccountEntity = require('../entities/entities').TraderAccount
+let Op = require('sequelize').Op
 
 class DatabaseAccessService {
 
@@ -243,27 +244,113 @@ class DatabaseAccessService {
     async getUserAccounts(){
         console.log(`in getUserAccounts of databaseAccessService`)
         
-        let users = await User.findAll()
+        let users = await User.findAll({
+            include: [
+                {
+                    model: Role,
+                    where: {
+                        [Op.or]: [
+                        {name: "admin"},
+                        {name: "basicEmployee"},
+                        {name: "csaEmployee"}
+                        ]
+                    }
+                },
+                {
+                    model: EmployeeAccount,
+                },
+            ]
+        })
 
         if(!users) return
 
-        let userAccounts = users.map(async user => {
+        console.log(users)
+
+        let userAccounts = users.map(user => {
+            console.log(user)
             return {
                 id: user.id,
                 email: user.email,
-                firstName: (await user.getAccount()).firstName,
-                middleName: (await user.getAccount()).middleName,
-                lastName: (await user.getAccount()).lastName,
-                address: (await user.getAccount()).address,
-                phoneNumber: (await user.getAccount()).phoneNumber,
-                roles: await user.getRoles()
-            }
+                firstName: user.EmployeeAccount.firstName,
+                middleName: user.EmployeeAccount.middleName,
+                lastName: user.EmployeeAccount.lastName,
+                address: user.EmployeeAccount.address,
+                phoneNumber: user.EmployeeAccount.phoneNumber,
+                roles: user.Roles
+            } 
         })
 
+        console.log('about to log user accounts')
         console.log(userAccounts)
 
         return userAccounts
     }
+
+    async getRoles(){
+        console.log(`in getRoles of databaseAccessService`)
+        
+        let roles = await Role.findAll()
+
+        if(!roles) return
+
+        console.log(roles)
+
+        console.log('about to log user accounts')
+
+        return roles
+    }
+
+    async createEmployeeUser(userData){
+        console.log(`in createEmployeeUser of databaseAccessService`)
+        
+        // check if user exists if it does exit
+
+        let country = await Country.findOne({where: {code: userData.country}})
+
+        console.log(country)
+        console.log('user data is:')
+        console.log(userData)
+
+        let newEmployeeUser = await User.create({
+            email: userData.email,
+            country: country ? country.name : '',
+            password: userData.password,
+            changePassword: true,
+            twoFaCode: '',
+            passwordResetToken: '',
+            EmployeeAccount: {
+                firstName: userData.firstName,
+                middleName: userData.middleName,
+                lastName: userData.lastName,
+                address: userData.address,
+                phoneNumber: userData.phoneNumber
+            }
+        }, {
+            include: [{
+                association: User.EmployeeAccount,
+            }]
+        })
+
+        let role = await Role.findOne({where: {name: userData.roles[0]}})
+
+        console.log(role)
+
+        await newEmployeeUser.addRole(role)
+
+        console.log(newEmployeeUser)
+
+        return {
+            email: newEmployeeUser.email,
+            country: newEmployeeUser.country,
+            firstName: newEmployeeUser.EmployeeAccount.firstName,
+            middleName: newEmployeeUser.EmployeeAccount.middleName,
+            lastName: newEmployeeUser.EmployeeAccount.lastName,
+            address: newEmployeeUser.EmployeeAccount.address,           
+            phoneNumber: newEmployeeUser.EmployeeAccount.phoneNumber,
+            roles: await newEmployeeUser.getRoles(),
+        }
+    }
 }
+
 
 module.exports = DatabaseAccessService

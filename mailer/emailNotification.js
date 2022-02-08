@@ -127,4 +127,24 @@ async function sendPasswordChangeSuccessfulNotification(email){
 
 }
 
-module.exports = { send2FaCode, sendPasswordResetEmailNotification, sendAccountDoesNotExistEmailNotification, sendPasswordChangeSuccessfulNotification }
+async function sendUserPasswordEmailNotification(email, pwd){
+  try {
+    
+    let info = await transporter.sendMail({
+      from: '"CryptoBank 👻" <info@crytobankafric.com>', // sender address
+      to: email, // list of receivers
+      subject: "New Employee Account created ✔", // Subject line
+      text: "Your account has been created.  Find below your new password.", // plain text body
+      html: `<b>You will be required to change your password when you try to logon</b>
+      <p>
+        Password: ${pwd}
+      </p>`, // html body
+    });
+
+    return "OK"
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+module.exports = { send2FaCode, sendPasswordResetEmailNotification, sendAccountDoesNotExistEmailNotification, sendPasswordChangeSuccessfulNotification, sendUserPasswordEmailNotification }

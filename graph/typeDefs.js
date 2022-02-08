@@ -73,7 +73,35 @@ const typeDefs = gql`
     lastName: String
     address: String
     phoneNumber: String
+    country: String
     roles: [Role]
+  }
+
+  # Input types
+  input UserAccountInput {
+    email: String 
+    firstName: String 
+    middleName: String
+    lastName: String
+    address: String
+    country: String
+    phoneNumber: String 
+    roles: [String]
+  }
+
+  # Mutation Responses
+
+  interface MutationResponse {
+    code: String!
+    success: Boolean!
+    message: String!
+  }
+
+  type CreateEmployeeUserMutationResponse implements MutationResponse {
+    code: String!
+    success: Boolean!
+    message: String!
+    userData: UserAccount
   }
 
   # The "Query" type is special: it lists all of the available queries that
@@ -86,6 +114,7 @@ const typeDefs = gql`
     idTypes: [IdType]
     defaultCurrency(country: String): Currency
     userAccounts: [UserAccount]
+    roles:[Role]
   }
 
   type Mutation {
@@ -94,6 +123,9 @@ const typeDefs = gql`
     resetPassword(email: String): PasswordResetResponse
     changePassword (passwordResetToken: String, email: String, password: String): PasswordChangeResponse
     createMerchantAccount (email: String, firstName: String, middleName: String, lastName: String, address: String, country: String, companyName: String, state: String, phoneNumber: String, registrationNumber: String, store: String, storeUrl: String): MerchantAccount
+    createEmployeeUserBkp (email: String, firstName: String, middleName: String, lastName: String, address: String, country: String, phoneNumber: String, roles: [String]): CreateEmployeeUserMutationResponse
+    createEmployeeUser (userData: UserAccountInput!): CreateEmployeeUserMutationResponse
+
   }
 `;
 
