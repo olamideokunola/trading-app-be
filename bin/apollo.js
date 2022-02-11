@@ -54,7 +54,7 @@ container.loadModules([
 )
 
 // CORS setup
-var whitelist = ['http://localhost:3000',"https://studio.apollographql.com"]
+var whitelist = ['http://localhost:3000',"https://studio.apollographql.com", 'http://localhost:3001']
 var corsOptions = {
   origin: function (origin, callback) {
     console.log(`origin is: ${origin}`)

@@ -84,6 +84,18 @@ const typeDefs = gql`
     roles: [Role]
   }
 
+  type TraderAccount {
+    id: Int
+    email: String
+    firstName: String
+    middleName: String
+    lastName: String
+    idPath: String
+    address: String
+    phoneNumber: String
+    country: String
+  }
+
   # Input types
 
   input UserAccountInput {
@@ -143,6 +155,20 @@ const typeDefs = gql`
     merchant: MerchantAccount
   }
 
+  type TradersQueryResponse implements MutationResponse {
+    code: String!
+    success: Boolean!
+    message: String!
+    traders: [TraderAccount]
+  }
+
+  type TraderQueryResponse implements MutationResponse {
+    code: String!
+    success: Boolean!
+    message: String!
+    trader: TraderAccount
+  }
+
   # The "Query" type is special: it lists all of the available queries that
   # clients can execute, along with the return type for each. In this
   # case, the "books" query returns an array of zero or more Books (defined above).
@@ -157,6 +183,8 @@ const typeDefs = gql`
     userAccount(id: ID): UserAccountQueryResponse
     merchants: MerchantsQueryResponse
     merchant(id: ID): MerchantQueryResponse
+    traders: TradersQueryResponse
+    trader(id: ID): TraderQueryResponse
   }
 
   type Mutation {

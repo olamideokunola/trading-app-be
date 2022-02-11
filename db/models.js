@@ -113,6 +113,9 @@ TraderAccount.init({
     lastName: {
         type: DataTypes.STRING,
     },
+    phoneNumber: {
+        type: DataTypes.STRING
+    },
     address: {
         type: DataTypes.STRING,
     },
@@ -321,6 +324,7 @@ let users = [
             middleName:'Olawale',
             lastName: 'Okunola',
             address: "Olamide's home",
+            phoneNumber: "09090909090",
             idPath: '//mylicense',
             currencies: []
         },
@@ -351,6 +355,7 @@ let users = [
             address: "Kenyan's home",
             lastName: 'User',
             idPath: '//Kenyanlicense',
+            phoneNumber: "09090909090",
             currencies: []
         }
     },
@@ -378,6 +383,7 @@ let users = [
             lastName: 'User',
             address: "Ghanian's home",
             idPath: '//Ghanianlicense',
+            phoneNumber: "09090909090",
             currencies: []
         },
         employeeAccount: {
@@ -467,6 +473,7 @@ sequelize.sync({ force: true })
                 lastName: user.traderAccount.lastName,
                 address: user.traderAccount.address,
                 idPath: user.traderAccount.idPath,
+                phoneNumber: user.traderAccount.phoneNumber,
                 currencies: []
             }
         }, {

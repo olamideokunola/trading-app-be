@@ -1,5 +1,5 @@
 
-const { registerUser, registerMerchant, manageUsers } = require('../usecases');
+const { registerUser, registerMerchant, manageUsers, manageTraders } = require('../usecases');
 const { User, Country, IdType, Currency } =  require('../db/models')
 
 // Resolvers define the technique for fetching the types defined in the
@@ -135,7 +135,35 @@ const resolvers = {
       console.log(merchant)
 
       return { code: 200, success, message, merchant }
-    }
+    },
+    traders: async (parent, args, context) => {
+      console.log(`in traders of resolver, user is`)
+      console.log(context.user)
+      
+      // authorised not implemented
+      let authorised = ['basicEmployee', 'csaEmployee']
+      if (!context.user) return  { code: 200, success: false, message: 'User not authorized' }
+            
+      let { success, message, traders } = await manageTraders.getTraders()
+      console.log(`in merchants of resolver, traders gotten`)
+      console.log(traders)
+
+      return { code: 200, success, message, traders }
+    },
+    trader: async (parent, args, context) => {
+      console.log(`in trader of resolver, user is`)
+      console.log(context.user)
+      
+      // authorised not implemented
+      let authorised = ['csaEmployee']
+      if (!context.user) return  { code: 200, success: false, message: 'User not authorized' }
+            
+      let { success, message, trader } = await manageTraders.getTrader(args.id)
+      console.log(`in traders of resolver, trader gotten`)
+      console.log(trader)
+
+      return { code: 200, success, message, trader }
+    },
   },
   Mutation: {
     addUser: async(parent, args, context) => {
