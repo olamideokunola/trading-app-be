@@ -32,7 +32,7 @@ function strategy () {
       console.log(`email is ${username}`)
 
       let query = {
-        attributes: ['id', 'email', 'country', 'password'],
+        attributes: ['id', 'email', 'country', 'password', 'changePassword'],
         where: {
             email: username
         }
@@ -112,7 +112,7 @@ router.post('/',
     let userData = await getUserRelatedData(req.user)
 
     // create token
-    var token = jwt.sign({ id: userData.id, email: userData.email, country: userData.country, isAdmin: userData.isAdmin, roles: userData.roles }, config.secret, {
+    var token = jwt.sign({ id: userData.id, email: userData.email, country: userData.country, isAdmin: userData.isAdmin, roles: userData.roles, changePassword: userData.changePassword }, config.secret, {
       expiresIn: 86400 // 24 hours
     });
 
@@ -230,13 +230,17 @@ getUserRelatedData = async (user) => {
   let isAdmin = roles.find(role => role === 'admin') ? true : false
 
   console.log(`in getUserRelatedData roles are ${roles}`)
+  console.log(`user is:`)
+  console.log(user)
+  console.log(`user change password flag is ${user.changePassword}`)
 
   return {
     id: user.id,
     email: user.email,
     country: user.country,
     roles,
-    isAdmin
+    isAdmin,
+    changePassword: user.changePassword
   }
 }
 module.exports = { passport, router, strategy, getUserFromToken };

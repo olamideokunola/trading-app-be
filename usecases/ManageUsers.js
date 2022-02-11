@@ -47,6 +47,35 @@ let ManageUsers = class {
             return   
         }  
     }
+
+    async getUserAccount(id) {
+        try {
+            
+            let userData = await this.userRepository.getUserAccount(id) 
+
+            if(!userData) return { success: false, message: 'User Account not available!'}
+            
+            return { success: true, message: 'Account gotten from database', userData }
+        
+        } catch (error) {
+            console.error(error) 
+            return   
+        } 
+    }
+
+    async saveEmployeeUser(userData){
+        try {
+            
+            let userExists = await this.userRepository.userExists({email: userData.email})
+            if(!userExists) return { success: false, message:"User does not exists!" }
+            
+            return { success: true, userAccount: await this.userRepository.saveEmployeeUser(userData) }
+        } catch (error) {
+            console.error(error) 
+            return   
+        }  
+    }
+
 }
 
 module.exports = ManageUsers

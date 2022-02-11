@@ -91,6 +91,50 @@ const resolvers = {
       console.log(roles)
 
       return roles
+    },
+    userAccount: async (parent, args, context) => {
+      console.log(`in userAccount of resolver, user is`)
+      console.log(context.user)
+      console.log(`id is ${args.id}`)
+      console.log(context.user.id.toString() !== args.id.toString())
+      
+      if (!context.user || !context.user.isAdmin && (context.user.id.toString() !== args.id.toString())) return null
+      
+      console.log(context.user.id)
+      
+      let { success, message, userData } = await manageUsers.getUserAccount(args.id)
+      console.log(`in userAccount of resolver, userAccount gotten`)
+      console.log(userData)
+
+      return { code: 200, success, message, userData }
+    },
+    merchants: async (parent, args, context) => {
+      console.log(`in merchants of resolver, user is`)
+      console.log(context.user)
+      
+      // authorised not implemented
+      let authorised = ['basicEmployee', 'csaEmployee']
+      if (!context.user) return  { code: 200, success: false, message: 'User not authorized' }
+            
+      let { success, message, merchants } = await registerMerchant.getMerchants()
+      console.log(`in merchants of resolver, merchants gotten`)
+      console.log(merchants)
+
+      return { code: 200, success, message, merchants }
+    },
+    merchant: async (parent, args, context) => {
+      console.log(`in merchant of resolver, user is`)
+      console.log(context.user)
+      
+      // authorised not implemented
+      let authorised = ['csaEmployee']
+      if (!context.user) return  { code: 200, success: false, message: 'User not authorized' }
+            
+      let { success, message, merchant } = await registerMerchant.getMerchant(args.id)
+      console.log(`in merchants of resolver, merchant gotten`)
+      console.log(merchant)
+
+      return { code: 200, success, message, merchant }
     }
   },
   Mutation: {
@@ -166,6 +210,31 @@ const resolvers = {
         msg
       }
     },
+    changeNewPassword: async(parent, args, context) => {
+      console.log(`in change password of resolver, email is ${args.email}`)
+      
+      
+
+      if(!context.user || args.email !== context.user.email) { 
+        
+        console.log('user not authorised')
+        
+        return {
+          email: args.email, 
+          successful: false,
+          msg: 'User not authorised'
+        }
+      }
+
+      await registerUser.changePassword(args.email, args.password)
+      console.log(`email has been sent`)
+
+      return {
+        email: args.email,
+        successful: true,
+        msg: 'Passord changed, check email for confirmation'
+      }
+    },
     createMerchantAccount: async (parent, args, context) => {
       console.log(`in createMerchantAccount of resolver, email is ${args.email}`)
 
@@ -190,6 +259,17 @@ const resolvers = {
 
       return newMerchant
     },
+    updateMerchantAccount: async (parent, args, context) => {
+      console.log(`in updateMerchantAccount of resolver, email is ${args.merchantData.email}`)
+
+      let merchant = await registerMerchant.updateMerchantAccount(args.merchantData)
+
+      if(!merchant) return
+
+      console.log(merchant)
+
+      return merchant
+    },
     createEmployeeUser: async (parent, args, context) => {
       console.log(`in createEmployeeUser of resolver, email is ${args.userData.email}`)
 
@@ -210,7 +290,28 @@ const resolvers = {
 
       if(!success) return { code: 200, success: false, message }
       return { code: 200, success: true, message:"Employee User successfully created!", userData: newUserAccount }
-    } 
+    },
+    saveEmployeeUser: async (parent, args, context) => {
+      console.log(`in saveEmployeeUser of resolver, email is ${args.userData.email}`)
+
+      if (!context.user && !context.user.isAdmin) return null
+
+      let { success, message, userAccount } = await manageUsers.saveEmployeeUser({
+        email: args.userData.email, 
+        firstName: args.userData.firstName, 
+        middleName: args.userData.middleName, 
+        lastName: args.userData.lastName, 
+        address: args.userData.address, 
+        country: args.userData.country, 
+        phoneNumber: args.userData.phoneNumber, 
+        roles: args.userData.roles
+      })
+
+      console.log(userAccount)
+
+      if(!success) return { code: 200, success: false, message }
+      return { code: 200, success: true, message:"Employee User successfully created!", userData: userAccount }
+    }  
   }
 };
 

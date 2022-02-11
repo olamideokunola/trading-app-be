@@ -121,6 +121,13 @@ class UserRepository {
     return usersAccounts
   }
 
+  async getUserAccount(id){
+    
+    let userAccount = await this._databaseAccessService.getUserAccount(id)
+
+    return userAccount
+  }
+
   async encodePassword(pwd) {
     return await bcrypt.hash(pwd, saltRounds)
   }
@@ -151,6 +158,14 @@ class UserRepository {
     let newEmployeeUser = await this._databaseAccessService.createEmployeeUser(userData)
 
     return newEmployeeUser
+
+  }
+
+  async saveEmployeeUser(userData){
+
+    let employeeUser = await this._databaseAccessService.saveEmployeeUser(userData)
+
+    return employeeUser
 
   }
   

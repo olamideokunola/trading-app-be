@@ -56,9 +56,16 @@ const typeDefs = gql`
   }
 
   type MerchantAccount {
+    id: ID,
+    registrationNumber: String,
     firstName: String
     middleName: String
     lastName: String
+    phoneNumber: String
+    email: String
+    address: String
+    country: String
+    state: String
     store: String
     storeUrl: String
     companyName: String
@@ -78,7 +85,9 @@ const typeDefs = gql`
   }
 
   # Input types
+
   input UserAccountInput {
+    id: ID
     email: String 
     firstName: String 
     middleName: String
@@ -89,6 +98,22 @@ const typeDefs = gql`
     roles: [String]
   }
 
+  input MerchantAccountInput {
+    id: ID
+    email: String
+    firstName: String
+    middleName: String
+    lastName: String
+    address: String 
+    country: String
+    companyName: String
+    state: String
+    phoneNumber: String
+    registrationNumber: String
+    store: String
+    storeUrl: String
+  }
+
   # Mutation Responses
 
   interface MutationResponse {
@@ -97,11 +122,25 @@ const typeDefs = gql`
     message: String!
   }
 
-  type CreateEmployeeUserMutationResponse implements MutationResponse {
+  type UserAccountQueryResponse implements MutationResponse {
     code: String!
     success: Boolean!
     message: String!
     userData: UserAccount
+  }
+
+  type MerchantsQueryResponse implements MutationResponse {
+    code: String!
+    success: Boolean!
+    message: String!
+    merchants: [MerchantAccount]
+  }
+
+  type MerchantQueryResponse implements MutationResponse {
+    code: String!
+    success: Boolean!
+    message: String!
+    merchant: MerchantAccount
   }
 
   # The "Query" type is special: it lists all of the available queries that
@@ -114,7 +153,10 @@ const typeDefs = gql`
     idTypes: [IdType]
     defaultCurrency(country: String): Currency
     userAccounts: [UserAccount]
-    roles:[Role]
+    roles: [Role]
+    userAccount(id: ID): UserAccountQueryResponse
+    merchants: MerchantsQueryResponse
+    merchant(id: ID): MerchantQueryResponse
   }
 
   type Mutation {
@@ -123,9 +165,11 @@ const typeDefs = gql`
     resetPassword(email: String): PasswordResetResponse
     changePassword (passwordResetToken: String, email: String, password: String): PasswordChangeResponse
     createMerchantAccount (email: String, firstName: String, middleName: String, lastName: String, address: String, country: String, companyName: String, state: String, phoneNumber: String, registrationNumber: String, store: String, storeUrl: String): MerchantAccount
-    createEmployeeUserBkp (email: String, firstName: String, middleName: String, lastName: String, address: String, country: String, phoneNumber: String, roles: [String]): CreateEmployeeUserMutationResponse
-    createEmployeeUser (userData: UserAccountInput!): CreateEmployeeUserMutationResponse
-
+    updateMerchantAccount (merchantData: MerchantAccountInput!): MerchantQueryResponse
+    createEmployeeUserBkp (email: String, firstName: String, middleName: String, lastName: String, address: String, country: String, phoneNumber: String, roles: [String]): UserAccountQueryResponse
+    createEmployeeUser (userData: UserAccountInput!): UserAccountQueryResponse
+    changeNewPassword (email: String, password: String): PasswordChangeResponse
+    saveEmployeeUser (userData: UserAccountInput!): UserAccountQueryResponse
   }
 `;
 

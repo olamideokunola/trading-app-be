@@ -390,6 +390,41 @@ let users = [
     }
 ]
 
+let merchants = [
+    {
+        id: 100,
+        companyName: 'Company XYZ',
+        registrationNumber: '00012121',
+        firstName: 'John',
+        middleName: 'Ron',
+        lastName: 'Smith',
+        phoneNumber: '0909090',
+        email: 'qwe@mail.com',
+        address: 'Company XYZ Address, Lagos',
+        country: 'Nigeria',
+        state: 'Lagos',
+        storeId: 'qweqe3-qweewr3-erewer',
+        store: 'XyZ Stores',
+        storeUrl: 'https://xyz.com/stores'
+    },
+    {
+        id: 200,
+        companyName: 'Company ABC',
+        registrationNumber: '12121000',
+        firstName: 'Smith',
+        middleName: 'Ron',
+        lastName: 'James',
+        phoneNumber: '0808080',
+        email: 'srj@mail.com',
+        address: 'Company ABC Address, Lagos',
+        country: 'Ghana',
+        state: 'Accra',
+        storeId: 'erewer-qweewr3-qweqe3',
+        store: 'AbC Stores',
+        storeUrl: 'https://abc.com/stores'
+    }
+]
+
 sequelize.sync({ force: true })
 .then(async() => {
     // save seed data to dataase
@@ -460,7 +495,10 @@ sequelize.sync({ force: true })
         }
     })
 
-    
+    merchants.forEach(async merchant => {
+        await MerchantAccount.create({...merchant})
+    })
+
 })
 
 

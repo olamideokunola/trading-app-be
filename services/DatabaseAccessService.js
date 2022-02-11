@@ -1,4 +1,4 @@
-var { User, Role, TraderAccount, IdType, CryptoAccount, Country, Currency, EmployeeAccount } = require('../db/models')
+var { User, Role, TraderAccount, IdType, CryptoAccount, Country, Currency, EmployeeAccount, MerchantAccount } = require('../db/models')
 let UserEntity = require('../entities/entities').User
 let TraderAccountEntity = require('../entities/entities').TraderAccount
 let Op = require('sequelize').Op
@@ -286,6 +286,54 @@ class DatabaseAccessService {
         return userAccounts
     }
 
+    async getUserAccount(id){
+    
+        console.log(`in getUserAccounts of databaseAccessService`)
+        
+        let user = await User.findOne({
+            where: {id},
+            include: [
+                {
+                    model: Role,
+                    where: {
+                        [Op.or]: [
+                        {name: "admin"},
+                        {name: "basicEmployee"},
+                        {name: "csaEmployee"}
+                        ]
+                    }
+                },
+                {
+                    model: EmployeeAccount,
+                },
+            ]
+        })
+
+        if(!user) return
+
+        console.log(user)
+        
+        let country = await Country.findOne({where: {name: user.country}})
+        console.log(country)
+
+        let userAccount = {
+            id: user.id,
+            email: user.email,
+            firstName: user.EmployeeAccount.firstName,
+            middleName: user.EmployeeAccount.middleName,
+            lastName: user.EmployeeAccount.lastName,
+            address: user.EmployeeAccount.address,
+            phoneNumber: user.EmployeeAccount.phoneNumber,
+            country: country.code,
+            roles: user.Roles
+        } 
+
+        console.log('about to log user account')
+        console.log(userAccount)
+
+        return userAccount
+      }
+
     async getRoles(){
         console.log(`in getRoles of databaseAccessService`)
         
@@ -350,6 +398,57 @@ class DatabaseAccessService {
             roles: await newEmployeeUser.getRoles(),
         }
     }
+
+    async saveEmployeeUser(userData){
+        console.log(`in saveEmployeeUser of databaseAccessService`)
+        
+        let country = await Country.findOne({where: {code: userData.country}})
+
+        console.log(country)
+        console.log('user data is:')
+        console.log(userData)
+
+        let employeeUser = await User.findOne({where: {email: userData.email}})
+
+        await employeeUser.update({
+            email: userData.email,
+            country: country ? country.name : ''
+        })
+
+        await employeeUser.save()
+
+        let employeeAccount = await employeeUser.getEmployeeAccount()
+
+        employeeAccount.update({
+            firstName: userData.firstName,
+            middleName: userData.middleName,
+            lastName: userData.lastName,
+            address: userData.address,
+        })  
+        
+        await employeeAccount.save()
+
+ 
+        let newRole = await Role.findOne({where: {name: userData.roles[0]}})
+        await employeeUser.setRoles([newRole])
+
+        await employeeUser.save()
+
+        console.log(employeeUser)
+
+        return {
+            email: employeeUser.email,
+            country: employeeUser.country,
+            firstName: (await employeeUser.getEmployeeAccount()).firstName,
+            middleName: (await employeeUser.getEmployeeAccount()).middleName,
+            lastName: (await employeeUser.getEmployeeAccount()).lastName,
+            address: (await employeeUser.getEmployeeAccount()).address,           
+            phoneNumber: (await employeeUser.getEmployeeAccount()).phoneNumber,
+            roles: await employeeUser.getRoles(),
+        }
+    }
+
+    
 }
 
 

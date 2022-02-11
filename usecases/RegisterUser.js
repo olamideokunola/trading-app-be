@@ -183,7 +183,7 @@ let RegisterUser = class {
 
     async changePassword(email, password) {
 
-        console.log(`in changePasswordr, about to change password, email is ${email}`)
+        console.log(`in changePassword, about to change password, email is ${email}`)
 
         // check account
         await this.checkAccount(email)   
