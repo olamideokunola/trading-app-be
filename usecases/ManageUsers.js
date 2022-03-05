@@ -28,7 +28,7 @@ let ManageUsers = class {
 
     async createEmployeeUser(userData){
         try {
-            
+            console.log(`in createEmployeeUser of ManageUsers, email is ${userData.email}`)
             let userExists = await this.userRepository.userExists({email: userData.email})
             if(userExists) return { success: false, message:"User already exists!" }
             
@@ -44,7 +44,7 @@ let ManageUsers = class {
             return { success: true, newUserAccount: await this.userRepository.createEmployeeUser(userData) }
         } catch (error) {
             console.error(error) 
-            return   
+            return { success: false, message: error.message }
         }  
     }
 

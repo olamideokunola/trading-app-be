@@ -303,6 +303,17 @@ const resolvers = {
 
       if (!context.user && !context.user.isAdmin) return null
 
+      console.log({
+        email: args.userData.email, 
+        firstName: args.userData.firstName, 
+        middleName: args.userData.middleName, 
+        lastName: args.userData.lastName, 
+        address: args.userData.address, 
+        country: args.userData.country, 
+        phoneNumber: args.userData.phoneNumber, 
+        roles: args.userData.roles
+      })
+
       let { success, message, newUserAccount } = await manageUsers.createEmployeeUser({
         email: args.userData.email, 
         firstName: args.userData.firstName, 

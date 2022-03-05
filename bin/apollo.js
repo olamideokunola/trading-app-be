@@ -1,5 +1,6 @@
 var { ApolloServer } = require ('apollo-server-express');
 var { ApolloServerPluginDrainHttpServer } = require('apollo-server-core');
+require('dotenv').config();
 
 var express = require ('express');
 var http = require('http');
@@ -54,7 +55,7 @@ container.loadModules([
 )
 
 // CORS setup
-var whitelist = ['http://localhost:3000',"https://studio.apollographql.com", 'http://localhost:3001']
+var whitelist = ['http://localhost:3000',"https://studio.apollographql.com", 'http://localhost:3001', `http://${process.env.PAYMENTS_UI_HOST}:3000`, `http://${process.env.TRADING_APP_UI_HOST}:3000`]
 var corsOptions = {
   origin: function (origin, callback) {
     console.log(`origin is: ${origin}`)
