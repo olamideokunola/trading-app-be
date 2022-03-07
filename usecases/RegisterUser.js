@@ -28,6 +28,11 @@ let RegisterUser = class {
         }
     }
 
+    async encodePassword(password){
+        let encoded = await this.userRepository.encodePassword(password)
+        return encoded
+    }
+
     async createTraderAccount({ email, accountData }) {
         try {   
             console.log(`in CreateAccount.execute, email is ${email}`)
