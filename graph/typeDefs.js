@@ -56,8 +56,8 @@ const typeDefs = gql`
   }
 
   type MerchantAccount {
-    id: ID,
-    registrationNumber: String,
+    id: ID
+    registrationNumber: String
     firstName: String
     middleName: String
     lastName: String
@@ -96,6 +96,20 @@ const typeDefs = gql`
     country: String
   }
 
+	type PaymentSuccessEmailNotification {
+		paymentId: String!
+		vendorId: String!
+		fiatSymbol: String!
+		fiatAmount: Float!
+		tokenQty: Float!
+		tokenSymbol: String!
+		vendorName: String!
+		payerEmail: String! 
+		paymentDate: String!
+		network: String!
+		walletAddress: String!
+	}
+	
   # Input types
 
   input UserAccountInput {
@@ -168,7 +182,14 @@ const typeDefs = gql`
     message: String!
     trader: TraderAccount
   }
-
+	
+	type PaymentSuccessEmailNotificationResponse implements MutationResponse {
+		code: String!
+    success: Boolean!
+    message: String!
+    paymentSuccessEmailNotification: PaymentSuccessEmailNotification
+	}
+	
   # The "Query" type is special: it lists all of the available queries that
   # clients can execute, along with the return type for each. In this
   # case, the "books" query returns an array of zero or more Books (defined above).
@@ -198,7 +219,9 @@ const typeDefs = gql`
     createEmployeeUser (userData: UserAccountInput!): UserAccountQueryResponse
     changeNewPassword (email: String, password: String): PasswordChangeResponse
     saveEmployeeUser (userData: UserAccountInput!): UserAccountQueryResponse
+    sendPaymentSuccessEmailNotification(paymentId: String!, vendorId: String!, fiatSymbol: String!, fiatAmount: Float!, tokenQty: Float!, tokenSymbol: String!, vendorName: String!, payerEmail: String!, paymentDate: String!, network: String!, walletAddress: String!): PaymentSuccessEmailNotificationResponse
   }
+  
 `;
 
 module.exports = typeDefs

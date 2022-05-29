@@ -1,0 +1,29 @@
+<diagram program="umletino" version="14.4.0-SNAPSHOT"><zoom_level>10</zoom_level><help_text>Space for diagram notes</help_text><element><id>UMLClass</id><coordinates><x>390</x><y>150</y><w>190</w><h>160</h></coordinates><panel_attributes>Payment
+--
+id: Long
+storeId: string
+amount: number
+paymentStartDate: date
+paymentCompletionDate: date
+email: string
+currency: string
+status: PAYMENT_STATUS
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>660</x><y>150</y><w>140</w><h>70</h></coordinates><panel_attributes>PAYMENT_STATUS
+--
+id: Long
+description: string
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>570</x><y>180</y><w>110</w><h>40</h></coordinates><panel_attributes>lt=-&gt;
+m1=1
+m2=1</panel_attributes><additional_attributes>10;10;90;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>160</x><y>180</y><w>110</w><h>80</h></coordinates><panel_attributes>MerchantAccount
+--
+id: Long
+vendorId: string
+name: string
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>260</x><y>200</y><w>150</w><h>50</h></coordinates><panel_attributes>lt=-&gt;
+m1=0..n
+receives &gt;</panel_attributes><additional_attributes>10;20;130;20</additional_attributes></element><element><id>UMLClass</id><coordinates><x>160</x><y>310</y><w>110</w><h>70</h></coordinates><panel_attributes>Payer
+--
+id: Long
+email: string</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>260</x><y>240</y><w>150</w><h>140</h></coordinates><panel_attributes>lt=-&gt;
+m1=1..n
+makes &gt;</panel_attributes><additional_attributes>10;110;60;110;60;10;130;10</additional_attributes></element></diagram>

@@ -4,6 +4,7 @@ require('dotenv').config();
 const sequelize = new Sequelize('postgres', 'postgres', 'example', {
   host: process.env.DB_HOST,
   dialect: 'postgres',
+  logging: false
 });
 
 async function testDbConnection() {

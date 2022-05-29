@@ -13,6 +13,9 @@ class CryptoAccount extends Model {}
 class Country extends Model {}
 class Currency extends Model {}
 
+class Payer extends Model {}
+class Payment extends Model {}
+
 User.init({
     email: {
         type: DataTypes.STRING,
@@ -210,6 +213,47 @@ Currency.init({
     modelName: 'Currency'
 })
 
+Payer.init({
+    email: {
+        type: DataTypes.STRING,
+        allowNull: false
+    }
+}, {
+    sequelize,
+    modelName: 'Payer'
+})
+
+Payment.init({
+    amount: {
+        type: DataTypes.DOUBLE,
+        allowNull: true
+    },
+    paymentStartDate: {
+        type: DataTypes.DATE,
+        allowNull: false
+    },
+    paymentCompletionDate: {
+        type: DataTypes.DATE,
+        allowNull: true
+    },
+    currency: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    status: {
+        type: DataTypes.ENUM("STARTED", "COMPLETED"),
+        allowNull: false
+    },
+    reference: {
+        type: DataTypes.STRING,
+        allowNull: false
+    }
+}, {
+    sequelize,
+    modelName: 'Payment',
+})
+
+
 // relationships
 User.TraderAccount = User.hasOne(TraderAccount)
 TraderAccount.belongsTo(User)
@@ -231,6 +275,12 @@ Currency.belongsTo(Country)
 
 TraderAccount.belongsToMany(Currency, { through: 'TraderAccountCurrencies' })
 Currency.belongsToMany(TraderAccount, { through: 'TraderAccountCurrencies' })
+
+Payer.hasMany(Payment)
+Payment.belongsTo(Payer)
+
+MerchantAccount.hasMany(Payment)
+Payment.belongsTo(MerchantAccount)
 
 let countries = [
     {
@@ -428,6 +478,22 @@ let merchants = [
         storeId: 'erewer-qweewr3-qweqe3',
         store: 'AbC Stores',
         storeUrl: 'https://abc.com/stores'
+    },
+    {
+        id: 300,
+        companyName: 'Vendor B',
+        registrationNumber: '12121000',
+        firstName: 'VBName',
+        middleName: 'VBMName',
+        lastName: 'VBLName',
+        phoneNumber: '0808080',
+        email: 'vb@mail.com',
+        address: 'Vendor B Address, Lagos',
+        country: 'Nigeria',
+        state: 'Lagos',
+        storeId: '7ced88de-debc-4b37-b18a-1ab2f507352d',
+        store: 'Vendor B Stores',
+        storeUrl: 'https://vb.com/stores'
     }
 ]
 
@@ -595,4 +661,4 @@ sequelize.sync({ force: true })
 //     }
 // })
 
-module.exports = { User, Role, TraderAccount, IdType, CryptoAccount, Country, Currency, MerchantAccount, EmployeeAccount }
+module.exports = { User, Role, TraderAccount, IdType, CryptoAccount, Country, Currency, MerchantAccount, EmployeeAccount, Payer, Payment }

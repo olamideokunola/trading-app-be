@@ -11,6 +11,7 @@ var passport = require('passport')
 var authRouter = require('../routes/auth').router;
 var getUserFromToken = require('../routes/auth').getUserFromToken;
 require('../routes/auth').strategy();
+var paymentRouter = require('../routes/payments')
 
 var typeDefs = require('../graph/typeDefs')
 var resolvers = require('../graph/resolvers')
@@ -55,7 +56,16 @@ container.loadModules([
 )
 
 // CORS setup
-var whitelist = ['http://localhost:3000',"https://studio.apollographql.com", 'http://localhost:3001', `http://${process.env.PAYMENTS_UI_HOST}:3000`, `http://${process.env.TRADING_APP_UI_HOST}:3000`]
+var whitelist = [
+  'http://localhost:3000',
+  "https://studio.apollographql.com", 
+  'http://localhost:3001', 
+  `http://${process.env.PAYMENTS_UI_HOST}:3000`, 
+  `http://${process.env.TRADING_APP_UI_HOST}:3000`,
+  `http://localhost:4000`,
+  `chrome-extension://fhbjgbiflinjbdggehcddcbncdddomop`
+]
+
 var corsOptions = {
   origin: function (origin, callback) {
     console.log(`origin is: ${origin}`)
@@ -111,11 +121,14 @@ async function startApolloServer(typeDefs, resolvers) {
 
   // authentication with passport
   app.use(passport.initialize());
+  app.use(express.json());
   app.use(express.urlencoded({ extended: false }));
 
   app.use(cors(corsOptions))
   app.use('/login', authRouter);
   app.use('/users', authRouter)
+
+  app.use('/payments', paymentRouter);
 
   server.applyMiddleware({ app });
   await new Promise(resolve => httpServer.listen({ port: 4000 }, resolve));

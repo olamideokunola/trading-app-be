@@ -1,6 +1,7 @@
 
 const { registerUser, registerMerchant, manageUsers, manageTraders } = require('../usecases');
 const { User, Country, IdType, Currency } =  require('../db/models')
+const { sendPaymentSuccessEmailNotification } = require('../mailer/emailNotification')
 
 // Resolvers define the technique for fetching the types defined in the
 // schema. This resolver retrieves books from the "books" array above.
@@ -350,7 +351,31 @@ const resolvers = {
 
       if(!success) return { code: 200, success: false, message }
       return { code: 200, success: true, message:"Employee User successfully created!", userData: userAccount }
-    }  
+    },
+    sendPaymentSuccessEmailNotification: async (parent, args, context) => {
+    	console.log(`in sendEmailNotification of resolver, email is ${args.email}`)
+    	
+    	//if (!context.user && !context.user.isAdmin) return null
+			
+			let emailInfo = {
+        paymentId: args.paymentId, 
+        vendorId: args.vendorId, 
+        fiatSymbol: args.fiatSymbol, 
+        fiatAmount: args.fiatAmount, 
+        tokenQty: args.tokenQty, 
+        tokenSymbol: args.tokenSymbol, 
+        vendorName: args.vendorName, 
+        payerEmail: args.payerEmail, 
+        paymentDate: args.paymentDate,
+        network: args.network,
+        walletAddress: args.walletAddress
+      }
+			
+    	let { success, message } = await sendPaymentSuccessEmailNotification(emailInfo)
+      
+    	if(!success) return { code: 200, success: false, message }
+      return { code: 200, success: true, message:"Email sent!", sendPaymentSuccessEmailNotification: emailInfo }
+    }
   }
 };
 

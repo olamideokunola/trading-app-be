@@ -147,4 +147,37 @@ async function sendUserPasswordEmailNotification(email, pwd){
   }
 }
 
-module.exports = { send2FaCode, sendPasswordResetEmailNotification, sendAccountDoesNotExistEmailNotification, sendPasswordChangeSuccessfulNotification, sendUserPasswordEmailNotification }
+async function sendPaymentSuccessEmailNotification(
+						{
+							payerEmail,
+		          vendorId,
+		          paymentId,
+		          paymentDate,
+		          tokenQty,
+		          tokenSymbol,
+		          fiatSymbol,
+		          fiatAmount,
+		          vendorName,
+		          network,
+		          walletAddress
+	          }){
+  try {
+    
+    let info = await transporter.sendMail({
+      from: '"CryptoBank 👻" <info@crytobankafric.com>', // sender address
+      to: payerEmail, // list of receivers
+      subject: "Payment successful ✔", // Subject line
+      text: `Payment of ${tokenQty} ${tokenSymbol} to vendor ${vendorName} was successful .`, // plain text body
+      html: `<p>PaymentId: ${paymentId} $</p>
+      <p>Date: of ${paymentDate} $</p><br/>
+      <p>Payment of ${tokenQty} ${tokenSymbol} to vendor ${vendorName} was successful</p>
+      `
+    });
+
+    return { success: true, message: 'Email sent', }
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+module.exports = { send2FaCode, sendPasswordResetEmailNotification, sendAccountDoesNotExistEmailNotification, sendPasswordChangeSuccessfulNotification, sendUserPasswordEmailNotification, sendPaymentSuccessEmailNotification }
