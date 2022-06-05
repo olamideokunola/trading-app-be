@@ -1,6 +1,8 @@
 const { Sequelize } = require('sequelize');
 require('dotenv').config();
 
+console.log('db host', process.env.DB_HOST)
+
 const sequelize = new Sequelize('postgres', 'postgres', 'example', {
   host: process.env.DB_HOST,
   dialect: 'postgres',

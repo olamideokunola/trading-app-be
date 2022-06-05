@@ -3,6 +3,16 @@ version: '3.1'
 
 services:
 
+  app:
+    image: olamideokunola/trading-app-be
+    command: "npm run start-graph"
+    volumes:
+      - ./:/trading-app-be
+    environment:
+      DB_HOST: db
+      PAYMENTS_UI_HOST: 165.232.84.196
+      TRADING_APP_UI_HOST: 134.122.59.160
+
   db:
     image: postgres
     restart: always
