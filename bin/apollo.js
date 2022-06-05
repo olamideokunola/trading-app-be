@@ -61,7 +61,11 @@ var whitelist = [
   "https://studio.apollographql.com", 
   'http://localhost:3001', 
   `http://${process.env.PAYMENTS_UI_HOST}:3000`, 
+  `http://${process.env.PAYMENTS_UI_HOST}:80`, 
+  `http://${process.env.PAYMENTS_UI_HOST}`, 
   `http://${process.env.TRADING_APP_UI_HOST}:3000`,
+  `http://${process.env.TRADING_APP_UI_HOST}:80`,
+  `http://${process.env.TRADING_APP_UI_HOST}`,
   `http://localhost:4000`,
   `chrome-extension://fhbjgbiflinjbdggehcddcbncdddomop`
 ]
