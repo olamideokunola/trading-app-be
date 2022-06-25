@@ -66,7 +66,7 @@ var whitelist = [
   `http://${process.env.TRADING_APP_UI_HOST}:3000`,
   `http://${process.env.TRADING_APP_UI_HOST}:80`,
   `https://${process.env.TRADING_APP_UI_HOST}`,
-  `https://cryptobank-checkout.netlify.app`
+  `https://cryptobank-checkout.netlify.app`,
   `http://localhost:4000`,
   `chrome-extension://fhbjgbiflinjbdggehcddcbncdddomop`
 ]
